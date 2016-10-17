@@ -28,6 +28,9 @@ See neural2d.h for more information.
 
 namespace NNet {
 
+bool fequal(float a, float b){
+  return fabs(a-b) < 1e-6;
+}
 
 //  ***********************************  Utility functions  ***********************************
 
@@ -1187,10 +1190,11 @@ void Net::reportResults(const Sample &sample) const
     info << endl;
 
     if (sample.targetVals.size() > 0) {
-        info << "Expected ";
+        info << "Expected: ";
         for (float targetVal : sample.targetVals) {
             info << targetVal << " ";
         }
+        info << endl;
 
         // Optional: Enable the following block if you would like to report the net's
         // outputs as a classifier, where the output neuron with the largest output
@@ -1200,22 +1204,21 @@ void Net::reportResults(const Sample &sample) const
         // and low to indicate no match.
 
         if (true) {
-            float maxOutput = std::numeric_limits<float>::min();
-            size_t maxIdx = 0;
-
+            float conf(0.0);
+            int numLabels(0);
+            // Check that all labels are a match...
             for (size_t li = 0; li < layers.back()->neurons[0].size(); ++li) { // Assumes output depth = 1
                 auto const &neuron = layers.back()->neurons[0][li];
-                if (neuron.output > maxOutput) {
-                    maxOutput = neuron.output;
-                    maxIdx = li;
+                if(sample.targetVals[li] == 1.0){
+                  conf += neuron.output;
+                  numLabels++;
+                }
+                if(!fequal(neuron.output<0.0?floor(neuron.output):ceil(neuron.output), sample.targetVals[li]<0.0?floor(sample.targetVals[li]):ceil(sample.targetVals[li]))){
+                  info << "Error - Misclassified index: " << li << " Expected: " << sample.targetVals[li] << " Observed: " << neuron.output << "\n";
                 }
             }
+            info << "Confidence: " << conf/float(numLabels);
 
-            if (sample.targetVals[maxIdx] > 0.0) {
-                info << " " << string("Correct");
-            } else {
-                info << " " << string("Wrong");
-            }
             info << endl;
         }
 

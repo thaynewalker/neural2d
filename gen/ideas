@@ -1,0 +1,18 @@
+Once they've been trained, neural networks can recognize patterns, giving predictions and/or classifying observations.
+
+Example:
+We want to detect whether a situation is "normal"; e.g. are entities in the space acting like they usually act? Or are they doing something different today?
+
+- Tip of the iceberg - Are the positions of entities on the map "normal"? Is the spectrum today "normal"?
+
+This can possibly be done by training a neural net with "normal" everyday traffic, spectrum, etc. and then give it a "new" situation to analyze. It should be able to give us an estimate of "normalcy".
+
+- Classifying a situation
+
+Suppose we train a neural net with instances of pre-labeled scenarios: "normal", "heightened", "threatening".
+
+If we present the net with a situation, it should be able to give us an estimate of the situation. "60% normal, 39% heightened, 1% threatening."
+
+An example is caffe: http://demo.caffe.berkeleyvision.org/classify_url?imageurl=http%3A%2F%2Fi.telegraph.co.uk%2Fmultimedia%2Farchive%2F02351%2Fcross-eyed-cat_2351472k.jpg
+
+We perhaps could use their open source neural net to classify data-refined situations instead of images...
